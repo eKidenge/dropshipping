@@ -1,0 +1,474 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Home - QINEX KENYA{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 80px 0; color: white;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 fade-in">
+                <h1 class="display-4 fw-bold mb-4">Welcome to Qinex Kenya</h1>
+                <p class="lead mb-4">Discover amazing products from trusted suppliers worldwide. Shop now and get exclusive deals!</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'store:products' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-shopping-bag me-2"></i>Shop Now
+                    </a>
+                    <a href="#featured" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-star me-2"></i>Featured Products
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center slide-in-right">
+                <img src="{% static 'images/hero.png' %}" alt="Hero Image" class="img-fluid rounded-3 shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 fade-in">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-primary mb-3">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h5 class="card-title">Free Shipping</h5>
+                        <p class="card-text">On orders over $50</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 fade-in" style="animation-delay: 0.1s;">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-primary mb-3">
+                            <i class="fas fa-undo"></i>
+                        </div>
+                        <h5 class="card-title">Easy Returns</h5>
+                        <p class="card-text">30-day return policy</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 fade-in" style="animation-delay: 0.2s;">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-primary mb-3">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h5 class="card-title">Secure Payment</h5>
+                        <p class="card-text">100% secure transactions</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 fade-in" style="animation-delay: 0.3s;">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-primary mb-3">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h5 class="card-title">24/7 Support</h5>
+                        <p class="card-text">Dedicated customer service</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Shop by Category</h2>
+            <p class="lead text-muted">Explore our wide range of categories</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for category in categories %}
+            <div class="col-md-4 col-lg-2 fade-in">
+                <a href="{% url 'store:category_products' category.slug %}" class="text-decoration-none">
+                    <div class="card text-center h-100">
+                        {% if category.image %}
+                        <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}" style="height: 150px; object-fit: cover;">
+                        {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 150px;">
+                            <i class="fas fa-folder fa-3x text-white"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ category.name }}</h5>
+                            <p class="card-text text-muted">{{ category.products.count }} products</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-5" id="featured">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Featured Products</h2>
+            <p class="lead text-muted">Check out our most popular products</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for product in featured_products %}
+            <div class="col-md-6 col-lg-3 fade-in">
+                <div class="card h-100">
+                    <div class="position-relative">
+                        {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-image fa-3x text-white"></i>
+                        </div>
+                        {% endif %}
+                        
+                        {% if product.get_discount_percentage > 0 %}
+                        <span class="badge badge-sale position-absolute top-0 end-0 m-2">
+                            -{{ product.get_discount_percentage }}%
+                        </span>
+                        {% endif %}
+                        
+                        {% if product.is_new %}
+                        <span class="badge badge-new position-absolute top-0 start-0 m-2">
+                            New
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name|truncatechars:30 }}</h5>
+                        <p class="card-text text-muted">{{ product.short_description|truncatechars:60 }}</p>
+                        
+                        <div class="rating mb-2">
+                            {% with avg_rating=product.reviews.aggregate.rating__avg %}
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= avg_rating|default:0 %}
+                                <i class="fas fa-star"></i>
+                                {% else %}
+                                <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <span>({{ product.reviews.count }})</span>
+                            {% endwith %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <span class="price">${{ product.selling_price }}</span>
+                                {% if product.compare_at_price %}
+                                <span class="old-price">${{ product.compare_at_price }}</span>
+                                {% endif %}
+                            </div>
+                            <span class="badge {% if product.is_in_stock %}bg-success{% else %}bg-danger{% endif %}">
+                                {% if product.is_in_stock %}In Stock{% else %}Out of Stock{% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'store:product_detail' product.slug %}" class="btn btn-outline-primary flex-grow-1">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <button class="btn btn-primary" onclick="addToCart({{ product.id }})">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="addToWishlist({{ product.id }})">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="lead">No featured products available.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- New Arrivals -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">New Arrivals</h2>
+            <p class="lead text-muted">Check out our latest products</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for product in new_products %}
+            <div class="col-md-6 col-lg-3 fade-in">
+                <div class="card h-100">
+                    <div class="position-relative">
+                        {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-image fa-3x text-white"></i>
+                        </div>
+                        {% endif %}
+                        <span class="badge badge-new position-absolute top-0 start-0 m-2">
+                            New
+                        </span>
+                    </div>
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name|truncatechars:30 }}</h5>
+                        <p class="card-text text-muted">{{ product.short_description|truncatechars:60 }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="price">${{ product.selling_price }}</span>
+                            <span class="badge {% if product.is_in_stock %}bg-success{% else %}bg-danger{% endif %}">
+                                {% if product.is_in_stock %}In Stock{% else %}Out of Stock{% endif %}
+                            </span>
+                        </div>
+                        
+                        <a href="{% url 'store:product_detail' product.slug %}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="lead">No new arrivals available.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Bestsellers -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Bestsellers</h2>
+            <p class="lead text-muted">Our most popular products</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for product in bestsellers %}
+            <div class="col-md-6 col-lg-3 fade-in">
+                <div class="card h-100">
+                    <div class="position-relative">
+                        {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-image fa-3x text-white"></i>
+                        </div>
+                        {% endif %}
+                        <span class="badge bg-warning position-absolute top-0 end-0 m-2">
+                            <i class="fas fa-star"></i> Bestseller
+                        </span>
+                    </div>
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name|truncatechars:30 }}</h5>
+                        <p class="card-text text-muted">{{ product.short_description|truncatechars:60 }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="price">${{ product.selling_price }}</span>
+                            <span class="badge {% if product.is_in_stock %}bg-success{% else %}bg-danger{% endif %}">
+                                {% if product.is_in_stock %}In Stock{% else %}Out of Stock{% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'store:product_detail' product.slug %}" class="btn btn-outline-primary flex-grow-1">
+                                View
+                            </a>
+                            <button class="btn btn-primary" onclick="addToCart({{ product.id }})">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="lead">No bestsellers available.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">What Our Customers Say</h2>
+            <p class="lead text-muted">Real reviews from real customers</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for review in recent_reviews %}
+            <div class="col-md-4 fade-in">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="rating mb-3">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                <i class="fas fa-star text-warning"></i>
+                                {% else %}
+                                <i class="far fa-star text-warning"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                        <p class="card-text">"{{ review.comment|truncatechars:100 }}"</p>
+                        
+                        <div class="d-flex align-items-center mt-3">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <span class="text-white fw-bold">{{ review.user.username|first|upper }}</span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">{{ review.user.username }}</h6>
+                                <small class="text-muted">{{ review.created_at|date }}</small>
+                                {% if review.verified_purchase %}
+                                <span class="badge bg-success ms-2">Verified Purchase</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="lead">No reviews yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4 mb-md-0">
+                <div class="display-1 fw-bold">{{ total_products }}</div>
+                <p class="lead">Products</p>
+            </div>
+            <div class="col-md-3 mb-4 mb-md-0">
+                <div class="display-1 fw-bold">{{ happy_customers }}</div>
+                <p class="lead">Happy Customers</p>
+            </div>
+            <div class="col-md-3 mb-4 mb-md-0">
+                <div class="display-1 fw-bold">24/7</div>
+                <p class="lead">Support</p>
+            </div>
+            <div class="col-md-3">
+                <div class="display-1 fw-bold">100%</div>
+                <p class="lead">Secure</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-4">Ready to Start Shopping?</h2>
+                <p class="lead mb-4">Join thousands of satisfied customers and discover amazing products at unbeatable prices.</p>
+                <a href="{% url 'store:products' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-shopping-bag me-2"></i>Shop Now
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h3 class="mb-3">Subscribe to Our Newsletter</h3>
+                <p class="text-muted mb-4">Get the latest updates on new products and upcoming sales</p>
+                
+                <form method="POST" action="{% url 'store:home' %}" class="newsletter-form">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input type="email" name="email" class="form-control form-control-lg" placeholder="Enter your email" required>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-paper-plane me-2"></i>Subscribe
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://via.placeholder.com/1920x1080') center/cover;
+        opacity: 0.1;
+        animation: zoom 20s infinite alternate;
+    }
+    
+    @keyframes zoom {
+        0% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(1.1);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Counter animation
+    const counters = document.querySelectorAll('.display-1');
+    const speed = 200;
+    
+    counters.forEach(counter => {
+        const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText;
+            
+            const inc = target / speed;
+            
+            if (count < target) {
+                counter.innerText = Math.ceil(count + inc);
+                setTimeout(updateCount, 1);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        
+        updateCount();
+    });
+</script>
+{% endblock %}

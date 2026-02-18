@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}QUINEX KENYA{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e293b;
+            --accent-color: #f59e0b;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --light-color: #f8fafc;
+            --dark-color: #0f172a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 80px; /* Prevent content from hiding under fixed navbar */
+        }
+        
+        /* Navbar Styles - Fixed at top */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            width: 100%;
+        }
+        
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white !important;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand img {
+            height: 45px;
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .navbar-nav .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+        
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s ease;
+        }
+        
+        .navbar-nav .nav-link:hover::after {
+            width: 80%;
+        }
+        
+        /* Search Bar */
+        .search-form {
+            position: relative;
+            width: 300px;
+        }
+        
+        .search-form input {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            padding-right: 40px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .search-form input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .search-form input:focus {
+            background: rgba(255,255,255,0.3);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+        }
+        
+        .search-form button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        
+        /* Cart Badge */
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* Main Content */
+        .main-content {
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+        
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: auto;
+        }
+        
+        .footer h5 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer h5::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--accent-color);
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            color: white;
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--accent-color);
+            transform: translateY(-3px);
+        }
+        
+        .newsletter-form input {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+        }
+        
+        .newsletter-form input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .newsletter-form button {
+            background: var(--accent-color);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-form button:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+        
+        .copyright {
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 1rem;
+            margin-top: 2rem;
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Alerts */
+        .alert {
+            border-radius: 10px;
+            border: none;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid #667eea;
+            color: #667eea;
+            background: transparent;
+        }
+        
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        .card-img-top {
+            height: 250px;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+        
+        .card:hover .card-img-top {
+            transform: scale(1.1);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-text {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        /* Badges */
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 500;
+        }
+        
+        .badge-sale {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .badge-new {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        /* Price */
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .old-price {
+            font-size: 1rem;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 0.5rem;
+        }
+        
+        /* Rating */
+        .rating {
+            color: #ffc107;
+            margin-bottom: 0.5rem;
+        }
+        
+        .rating span {
+            color: #666;
+            margin-left: 0.5rem;
+        }
+        
+        /* Pagination */
+        .pagination {
+            margin-top: 2rem;
+            justify-content: center;
+        }
+        
+        .page-link {
+            border: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            border-radius: 50px;
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .page-link:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        /* Loading Spinner */
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .toast {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: slideInRight 0.3s ease;
+            min-width: 300px;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .toast-success {
+            border-left: 4px solid #10b981;
+        }
+        
+        .toast-error {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .toast-warning {
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .toast-info {
+            border-left: 4px solid #3b82f6;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px; /* Slightly smaller padding for mobile */
+            }
+            
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            
+            .navbar-brand img {
+                height: 35px;
+            }
+            
+            .search-form {
+                width: 100%;
+                margin: 1rem 0;
+            }
+            
+            .card-img-top {
+                height: 200px;
+            }
+            
+            .price {
+                font-size: 1.2rem;
+            }
+        }
+        
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 1s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .slide-in-left {
+            animation: slideInLeft 0.5s ease;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .slide-in-right {
+            animation: slideInRight 0.5s ease;
+        }
+        
+        /* Scroll to Top */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .scroll-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            margin-top: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+        
+        .suggestion-item {
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-item a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .suggestion-item:hover {
+            background: #f8f9fa;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div class="spinner-overlay" id="spinner">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Scroll to Top Button -->
+    <div class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Navbar - Now fixed at top -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'store:home' %}">
+                <img src="/static/images/logo.png" alt="QINEX KENYA" onerror="this.style.display='none';">
+                QINEX KENYA
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'store:home' %}">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'store:products' %}">
+                            <i class="fas fa-store"></i> Shop
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-list"></i> Categories
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% for category in categories|slice:":5" %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'store:category_products' category.slug %}">
+                                    {{ category.name }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'store:products' %}">
+                                    All Categories
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <!-- Search Form -->
+                <form class="search-form me-3" action="{% url 'store:products' %}" method="GET">
+                    <input type="text" name="q" placeholder="Search products..." autocomplete="off" id="searchInput">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                    <div class="search-suggestions" id="searchSuggestions"></div>
+                </form>
+                
+                <!-- User Menu -->
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'store:profile' %}">
+                                    <i class="fas fa-user-circle"></i> Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'store:wishlist' %}">
+                                    <i class="fas fa-heart"></i> Wishlist
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'store:orders' %}">
+                                    <i class="fas fa-shopping-bag"></i> Orders
+                                </a>
+                            </li>
+                            {% if user.is_staff %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'store:admin_dashboard' %}">
+                                    <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+                                </a>
+                            </li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'store:logout' %}">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'store:login' %}">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'store:register' %}">
+                            <i class="fas fa-user-plus"></i> Register
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    <li class="nav-item position-relative">
+                        <a class="nav-link" href="{% url 'store:cart' %}">
+                            <i class="fas fa-shopping-cart"></i> Cart
+                            <span class="cart-badge" id="cartCount">{{ cart_count|default:0 }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5>About Us</h5>
+                    <p>Your premier destination for quality products at unbeatable prices. We connect you with the best suppliers worldwide.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'store:home' %}">Home</a></li>
+                        <li><a href="{% url 'store:products' %}">Shop</a></li>
+                        <li><a href="{% url 'store:page' 'about' %}">About Us</a></li>
+                        <li><a href="{% url 'store:page' 'contact' %}">Contact</a></li>
+                        <li><a href="{% url 'store:track_order' %}">Track Order</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Categories</h5>
+                    <ul class="footer-links">
+                        {% for category in categories|slice:":5" %}
+                        <li><a href="{% url 'store:category_products' category.slug %}">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe to get special offers, free giveaways, and exclusive deals.</p>
+                    <form class="newsletter-form" method="POST" action="{% url 'store:home' %}">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="email" name="email" class="form-control" placeholder="Your email" required>
+                            <button class="btn" type="submit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; {% now "Y" %} Qinex Kenya. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Show loading spinner
+        function showSpinner() {
+            document.getElementById('spinner').style.display = 'flex';
+        }
+        
+        function hideSpinner() {
+            document.getElementById('spinner').style.display = 'none';
+        }
+        
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+                    <div>${message}</div>
+                </div>
+            `;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 3000);
+        }
+        
+        // Scroll to top
+        window.addEventListener('scroll', function() {
+            const scrollTop = document.getElementById('scrollTop');
+            scrollTop.style.display = window.pageYOffset > 300 ? 'flex' : 'none';
+        });
+        
+        document.getElementById('scrollTop').addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Search suggestions
+        let searchTimeout;
+        const searchInput = document.getElementById('searchInput');
+        if(searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                const query = this.value;
+                const suggestionsDiv = document.getElementById('searchSuggestions');
+                if (query.length < 2) {
+                    suggestionsDiv.style.display = 'none';
+                    return;
+                }
+                searchTimeout = setTimeout(() => {
+                    fetch(`/search/suggestions/?q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestionsDiv.innerHTML = '';
+                            if (data.suggestions && data.suggestions.length > 0) {
+                                data.suggestions.forEach(item => {
+                                    const div = document.createElement('div');
+                                    div.className = 'suggestion-item';
+                                    div.innerHTML = `<a href="${item.url}" class="d-flex align-items-center"><img src="${item.image}" alt="" width="40" height="40"><div class="ms-2"><div>${item.name}</div><div class="text-primary">$${item.price}</div></div></a>`;
+                                    suggestionsDiv.appendChild(div);
+                                });
+                                suggestionsDiv.style.display = 'block';
+                            } else {
+                                suggestionsDiv.style.display = 'none';
+                            }
+                        }).catch(() => { suggestionsDiv.style.display = 'none'; });
+                }, 300);
+            });
+        }
+        
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-form')) {
+                const el = document.getElementById('searchSuggestions');
+                if(el) el.style.display = 'none';
+            }
+        });
+        
+        function updateCartCount() {
+            fetch('/cart/count/').then(r=>r.json()).then(d=>{ document.getElementById('cartCount').textContent = d.count; });
+        }
+        
+        window.addToCart = function(productId, quantity=1, variantId=null) {
+            showSpinner();
+            const formData = new FormData();
+            formData.append('product_id', productId);
+            formData.append('quantity', quantity);
+            if(variantId) formData.append('variant_id', variantId);
+            fetch('/cart/add/', { method:'POST', body:formData, headers:{'X-CSRFToken':'{{ csrf_token }}'} })
+            .then(r=>r.json()).then(d=>{ hideSpinner(); if(d.success){ showToast(d.message,'success'); document.getElementById('cartCount').textContent = d.cart_count; } else { showToast(d.error,'error'); } })
+            .catch(()=>{ hideSpinner(); showToast('An error occurred','error'); });
+        };
+        
+        window.addToWishlist = function(productId) {
+            showSpinner();
+            const formData = new FormData(); formData.append('product_id', productId);
+            fetch('/wishlist/add/', { method:'POST', body:formData, headers:{'X-CSRFToken':'{{ csrf_token }}'} })
+            .then(r=>r.json()).then(d=>{ hideSpinner(); showToast(d.message, d.success?'success':'info'); })
+            .catch(()=>{ hideSpinner(); showToast('An error occurred','error'); });
+        };
+        
+        window.applyCoupon = function() {
+            const code = document.getElementById('couponCode')?.value;
+            if(!code) { showToast('Please enter a coupon code','warning'); return; }
+            showSpinner();
+            const formData = new FormData(); formData.append('code', code);
+            fetch('/coupon/apply/', { method:'POST', body:formData, headers:{'X-CSRFToken':'{{ csrf_token }}'} })
+            .then(r=>r.json()).then(d=>{ hideSpinner(); if(d.success){ showToast(d.message,'success'); const el = document.getElementById('discountAmount'); if(el) el.textContent = `-$${d.discount}`; } else { showToast(d.error,'error'); } })
+            .catch(()=>{ hideSpinner(); showToast('An error occurred','error'); });
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+            
+            const images = document.querySelectorAll('img[data-src]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if(e.isIntersecting) { const img = e.target; img.src = img.dataset.src; img.classList.add('fade-in'); observer.unobserve(img); }
+                });
+            });
+            images.forEach(img => observer.observe(img));
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault(); const target = document.querySelector(this.getAttribute('href')); if(target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+                });
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

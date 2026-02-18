@@ -1,0 +1,262 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Order #{{ order.order_number }} - Dropshipping Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'store:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'store:user_orders' %}">My Orders</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Order #{{ order.order_number }}</li>
+        </ol>
+    </nav>
+    
+    <!-- Order Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Order #{{ order.order_number }}</h2>
+        <span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% elif order.status == 'shipped' %}info{% elif order.status == 'processing' %}primary{% elif order.status == 'pending' %}warning{% else %}secondary{% endif %} p-3">
+            {{ order.get_status_display }}
+        </span>
+    </div>
+    
+    <!-- Order Details Grid -->
+    <div class="row g-4">
+        <!-- Order Summary -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Order Items</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in order.items.all %}
+                    <div class="row align-items-center mb-3 pb-3 border-bottom">
+                        <div class="col-md-2">
+                            {% if item.product and item.product.main_image %}
+                            <img src="{{ item.product.main_image.url }}" class="img-fluid rounded" alt="{{ item.product_name }}">
+                            {% else %}
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 80px;">
+                                <i class="fas fa-box fa-2x text-muted"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-1">{{ item.product_name }}</h6>
+                            <p class="text-muted small mb-0">SKU: {{ item.product_sku }}</p>
+                            {% if item.variant %}
+                            <p class="text-muted small mb-0">Variant: {{ item.variant.name }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <span class="text-muted">Qty: {{ item.quantity }}</span>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <span class="fw-bold">${{ item.price|floatformat:2 }}</span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-4">
+                        <p class="text-muted">No items found in this order.</p>
+                    </div>
+                    {% endfor %}
+                    
+                    <!-- Totals -->
+                    <div class="row mt-4">
+                        <div class="col-md-6 offset-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td>Subtotal:</td>
+                                    <td class="text-end">${{ order.subtotal|floatformat:2|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Shipping:</td>
+                                    <td class="text-end">${{ order.shipping_cost|floatformat:2|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tax:</td>
+                                    <td class="text-end">${{ order.tax|floatformat:2|intcomma }}</td>
+                                </tr>
+                                {% if order.discount > 0 %}
+                                <tr>
+                                    <td>Discount:</td>
+                                    <td class="text-end text-success">-${{ order.discount|floatformat:2|intcomma }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr class="border-top">
+                                    <th>Total:</th>
+                                    <th class="text-end">${{ order.total|floatformat:2|intcomma }}</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tracking Information -->
+            {% if order.status == 'shipped' or order.status == 'delivered' %}
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Tracking Information</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in order.items.all %}
+                        {% if item.tracking_number %}
+                        <div class="mb-3">
+                            <strong>{{ item.product_name }}</strong>
+                            <p class="mb-1">Tracking Number: {{ item.tracking_number }}</p>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Track Package</a>
+                        </div>
+                        {% else %}
+                        <div class="mb-3">
+                            <p class="text-muted">No tracking information available yet.</p>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Order Information -->
+        <div class="col-md-4">
+            <!-- Customer Info -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Customer Information</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Name:</strong> {{ order.get_full_name }}</p>
+                    <p class="mb-1"><strong>Email:</strong> {{ order.email }}</p>
+                    <p class="mb-1"><strong>Phone:</strong> {{ order.phone }}</p>
+                    <p class="mb-0"><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y" }}</p>
+                </div>
+            </div>
+            
+            <!-- Shipping Address -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Shipping Address</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1">{{ order.shipping_first_name }} {{ order.shipping_last_name }}</p>
+                    <p class="mb-1">{{ order.shipping_address }}</p>
+                    {% if order.shipping_address2 %}
+                    <p class="mb-1">{{ order.shipping_address2 }}</p>
+                    {% endif %}
+                    <p class="mb-1">{{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_zipcode }}</p>
+                    <p class="mb-0">{{ order.shipping_country }}</p>
+                </div>
+            </div>
+            
+            <!-- Billing Address -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Billing Address</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1">{{ order.billing_first_name }} {{ order.billing_last_name }}</p>
+                    <p class="mb-1">{{ order.billing_address }}</p>
+                    {% if order.billing_address2 %}
+                    <p class="mb-1">{{ order.billing_address2 }}</p>
+                    {% endif %}
+                    <p class="mb-1">{{ order.billing_city }}, {{ order.billing_state }} {{ order.billing_zipcode }}</p>
+                    <p class="mb-0">{{ order.billing_country }}</p>
+                </div>
+            </div>
+            
+            <!-- Payment Info -->
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Payment Information</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Method:</strong> {{ order.get_payment_method_display }}</p>
+                    <p class="mb-1"><strong>Status:</strong> 
+                        <span class="badge {% if order.payment_status == 'paid' %}bg-success{% elif order.payment_status == 'pending' %}bg-warning{% elif order.payment_status == 'failed' %}bg-danger{% else %}bg-secondary{% endif %}">
+                            {{ order.get_payment_status_display }}
+                        </span>
+                    </p>
+                    {% if order.payment_id %}
+                    <p class="mb-0"><strong>Transaction ID:</strong> {{ order.payment_id }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="d-grid gap-2 mt-4">
+                {% if order.order_number %}
+                <a href="{% url 'store:order_invoice' order.order_number %}" class="btn btn-primary">
+                    <i class="fas fa-download me-2"></i>Download Invoice
+                </a>
+                {% endif %}
+                
+                {% if order.status != 'cancelled' and order.status != 'delivered' and order.order_number %}
+                <button class="btn btn-outline-danger" onclick="cancelOrder('{{ order.order_number }}')">
+                    <i class="fas fa-times me-2"></i>Cancel Order
+                </button>
+                {% endif %}
+                
+                {% if order.order_number %}
+                <button class="btn btn-outline-primary" onclick="reorder('{{ order.order_number }}')">
+                    <i class="fas fa-redo me-2"></i>Reorder
+                </button>
+                <a href="{% url 'store:user_orders' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function cancelOrder(orderNumber) {
+        if (confirm('Are you sure you want to cancel this order?')) {
+            fetch(`/order/${orderNumber}/cancel/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Order cancelled successfully', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showToast(data.error || 'Failed to cancel order', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('An error occurred', 'error');
+            });
+        }
+    }
+    
+    function reorder(orderNumber) {
+        fetch(`/order/${orderNumber}/reorder/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Items added to cart', 'success');
+                setTimeout(() => window.location.href = '/cart/', 1500);
+            } else {
+                showToast(data.error || 'Failed to reorder', 'error');
+            }
+        })
+        .catch(error => {
+            showToast('An error occurred', 'error');
+        });
+    }
+</script>
+{% endblock %}

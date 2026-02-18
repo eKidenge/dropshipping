@@ -1,0 +1,572 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}My Profile - Dropshipping Store{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 3rem 0;
+        color: white;
+        margin-bottom: 2rem;
+    }
+    
+    .profile-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .avatar-section {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        margin-bottom: 1rem;
+    }
+    
+    .avatar-placeholder {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        border: 5px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .avatar-placeholder span {
+        font-size: 3rem;
+        font-weight: 700;
+        color: white;
+        text-transform: uppercase;
+    }
+    
+    .user-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+    
+    .user-email {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.2rem;
+    }
+    
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .info-row {
+        display: flex;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .info-label {
+        width: 150px;
+        font-weight: 600;
+        color: #666;
+    }
+    
+    .info-value {
+        flex: 1;
+        color: #333;
+    }
+    
+    .edit-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .edit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .order-history-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .order-history-card:hover {
+        background: white;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .order-number {
+        font-weight: 600;
+        color: #667eea;
+        text-decoration: none;
+    }
+    
+    .order-number:hover {
+        text-decoration: underline;
+    }
+    
+    .badge-status {
+        padding: 0.35rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .badge-pending {
+        background: #fff3e0;
+        color: #f59e0b;
+    }
+    
+    .badge-processing {
+        background: #e3f2fd;
+        color: #2196f3;
+    }
+    
+    .badge-shipped {
+        background: #e8f5e9;
+        color: #4caf50;
+    }
+    
+    .badge-delivered {
+        background: #e8f5e9;
+        color: #10b981;
+    }
+    
+    .badge-cancelled {
+        background: #ffebee;
+        color: #ef4444;
+    }
+    
+    .address-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        height: 100%;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .address-card:hover {
+        background: white;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .address-card.default {
+        border: 2px solid #667eea;
+    }
+    
+    .default-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: #667eea;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .address-name {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        padding-right: 70px;
+    }
+    
+    .address-details {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .address-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .btn-address {
+        padding: 0.25rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .btn-address.edit {
+        background: #667eea;
+        color: white;
+    }
+    
+    .btn-address.delete {
+        background: #ffebee;
+        color: #ef4444;
+    }
+    
+    .btn-address.delete:hover {
+        background: #ef4444;
+        color: white;
+    }
+    
+    .btn-address.set-default {
+        background: #f8f9fa;
+        color: #666;
+        border: 1px solid #e1e5e9;
+    }
+    
+    .btn-address.set-default:hover {
+        background: #e9ecef;
+    }
+    
+    .add-address-btn {
+        background: white;
+        border: 2px dashed #667eea;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        color: #667eea;
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+    
+    .add-address-btn:hover {
+        background: #f8f9fa;
+        transform: translateY(-5px);
+    }
+    
+    .add-address-btn i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .info-row {
+            flex-direction: column;
+        }
+        
+        .info-label {
+            width: 100%;
+            margin-bottom: 0.25rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Profile Header -->
+<div class="profile-header">
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-2">My Profile</h1>
+        <p class="lead mb-0">Manage your account information and preferences</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row">
+        <!-- Left Column - Avatar and Stats -->
+        <div class="col-lg-4">
+            <div class="profile-card">
+                <div class="avatar-section">
+                    {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="{{ user.username }}" class="avatar">
+                    {% else %}
+                    <div class="avatar-placeholder">
+                        <span>{{ user.username|first|upper }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <h3 class="user-name">{{ user.get_full_name|default:user.username }}</h3>
+                    <p class="user-email">{{ user.email }}</p>
+                    
+                    <a href="{% url 'store:edit_profile' %}" class="edit-btn">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
+                </div>
+                
+                <hr class="my-4">
+                
+                <!-- Stats -->
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="stat-value">{{ total_orders|default:0 }}</div>
+                            <div class="stat-label">Total Orders</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-value">${{ total_spent|default:0|floatformat:0 }}</div>
+                            <div class="stat-label">Total Spent</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="stat-value">{{ wishlist_count|default:0 }}</div>
+                            <div class="stat-label">Wishlist</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-value">{{ review_count|default:0 }}</div>
+                            <div class="stat-label">Reviews</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Account Navigation -->
+            <div class="profile-card">
+                <h5 class="section-title">Quick Links</h5>
+                <div class="list-group">
+                    <a href="{% url 'store:user_orders' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-bag me-2 text-primary"></i> My Orders
+                    </a>
+                    <a href="{% url 'store:wishlist' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart me-2 text-danger"></i> My Wishlist
+                    </a>
+                    <a href="{% url 'store:address_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-map-marker-alt me-2 text-success"></i> My Addresses
+                    </a>
+                    <a href="{% url 'store:change_password' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-lock me-2 text-warning"></i> Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column - Profile Details -->
+        <div class="col-lg-8">
+            <!-- Personal Information -->
+            <div class="profile-card">
+                <h5 class="section-title">Personal Information</h5>
+                
+                <div class="info-row">
+                    <div class="info-label">Full Name:</div>
+                    <div class="info-value">{{ user.get_full_name|default:"Not provided" }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Username:</div>
+                    <div class="info-value">{{ user.username }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Email:</div>
+                    <div class="info-value">{{ user.email }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Phone:</div>
+                    <div class="info-value">{{ profile.phone|default:"Not provided" }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Date of Birth:</div>
+                    <div class="info-value">{{ profile.date_of_birth|date:"F d, Y"|default:"Not provided" }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Member Since:</div>
+                    <div class="info-value">{{ user.date_joined|date:"F d, Y" }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Last Login:</div>
+                    <div class="info-value">{{ user.last_login|date:"F d, Y H:i" }}</div>
+                </div>
+            </div>
+            
+            <!-- Default Address -->
+            <div class="profile-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="section-title mb-0">Default Address</h5>
+                    <a href="{% url 'store:address_list' %}" class="btn btn-sm btn-outline-primary">
+                        Manage Addresses
+                    </a>
+                </div>
+                
+                {% if default_address %}
+                <div class="address-card default">
+                    <span class="default-badge">DEFAULT</span>
+                    <div class="address-name">{{ default_address.first_name }} {{ default_address.last_name }}</div>
+                    <div class="address-details">
+                        {{ default_address.address }}<br>
+                        {% if default_address.address2 %}{{ default_address.address2 }}<br>{% endif %}
+                        {{ default_address.city }}, {{ default_address.state }} {{ default_address.zipcode }}<br>
+                        {{ default_address.country }}<br>
+                        <strong>Phone:</strong> {{ default_address.phone }}
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted">No default address set.</p>
+                <a href="{% url 'store:add_address' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Add Address
+                </a>
+                {% endif %}
+            </div>
+            
+            <!-- Recent Orders -->
+            <div class="profile-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="section-title mb-0">Recent Orders</h5>
+                    <a href="{% url 'store:user_orders' %}" class="btn btn-sm btn-outline-primary">
+                        View All
+                    </a>
+                </div>
+                
+                {% if recent_orders %}
+                    {% for order in recent_orders %}
+                    <div class="order-history-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <a href="{% url 'store:order_detail' order.order_number %}" class="order-number">
+                                    #{{ order.order_number }}
+                                </a>
+                                <div class="text-muted small">{{ order.created_at|date:"M d, Y" }}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="fw-bold">${{ order.total|floatformat:2 }}</span>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="badge-status 
+                                    {% if order.status == 'pending' %}badge-pending
+                                    {% elif order.status == 'processing' %}badge-processing
+                                    {% elif order.status == 'shipped' %}badge-shipped
+                                    {% elif order.status == 'delivered' %}badge-delivered
+                                    {% elif order.status == 'cancelled' %}badge-cancelled
+                                    {% endif %}">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <a href="{% url 'store:order_detail' order.order_number %}" class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center py-4">You haven't placed any orders yet.</p>
+                    <div class="text-center">
+                        <a href="{% url 'store:products' %}" class="btn btn-primary">
+                            <i class="fas fa-store me-2"></i>Start Shopping
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Preferences -->
+            <div class="profile-card">
+                <h5 class="section-title">Preferences</h5>
+                
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="newsletter" 
+                           {% if profile.newsletter_subscribed %}checked{% endif %} disabled>
+                    <label class="form-check-label" for="newsletter">
+                        Subscribe to Newsletter
+                    </label>
+                </div>
+                
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="emailNotifications" 
+                           {% if profile.email_notifications %}checked{% endif %} disabled>
+                    <label class="form-check-label" for="emailNotifications">
+                        Email Notifications
+                    </label>
+                </div>
+                
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="smsNotifications" 
+                           {% if profile.sms_notifications %}checked{% endif %} disabled>
+                    <label class="form-check-label" for="smsNotifications">
+                        SMS Notifications
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

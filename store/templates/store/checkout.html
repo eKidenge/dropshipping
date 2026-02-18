@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - Dropshipping Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">Checkout</h2>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" id="checkoutForm">
+                        {% csrf_token %}
+                        
+                        <!-- Contact Information -->
+                        <h5 class="mb-3">Contact Information</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                <div class="text-danger small">{{ form.phone.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Shipping Address -->
+                        <h5 class="mb-3">Shipping Address</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                {{ form.shipping_first_name }}
+                                {% if form.shipping_first_name.errors %}
+                                <div class="text-danger small">{{ form.shipping_first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                {{ form.shipping_last_name }}
+                                {% if form.shipping_last_name.errors %}
+                                <div class="text-danger small">{{ form.shipping_last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Address</label>
+                                {{ form.shipping_address }}
+                                {% if form.shipping_address.errors %}
+                                <div class="text-danger small">{{ form.shipping_address.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Address Line 2 (Optional)</label>
+                                {{ form.shipping_address2 }}
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label">City</label>
+                                {{ form.shipping_city }}
+                                {% if form.shipping_city.errors %}
+                                <div class="text-danger small">{{ form.shipping_city.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">State</label>
+                                {{ form.shipping_state }}
+                                {% if form.shipping_state.errors %}
+                                <div class="text-danger small">{{ form.shipping_state.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">ZIP Code</label>
+                                {{ form.shipping_zipcode }}
+                                {% if form.shipping_zipcode.errors %}
+                                <div class="text-danger small">{{ form.shipping_zipcode.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Country</label>
+                                {{ form.shipping_country }}
+                                {% if form.shipping_country.errors %}
+                                <div class="text-danger small">{{ form.shipping_country.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Billing Address -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                {{ form.same_as_shipping }}
+                                <label class="form-check-label" for="{{ form.same_as_shipping.id_for_label }}">
+                                    Billing address same as shipping
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="billingAddress" style="display: none;">
+                            <h5 class="mb-3">Billing Address</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">First Name</label>
+                                    {{ form.billing_first_name }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Last Name</label>
+                                    {{ form.billing_last_name }}
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Address</label>
+                                    {{ form.billing_address }}
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Address Line 2 (Optional)</label>
+                                    {{ form.billing_address2 }}
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label">City</label>
+                                    {{ form.billing_city }}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">State</label>
+                                    {{ form.billing_state }}
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">ZIP Code</label>
+                                    {{ form.billing_zipcode }}
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Country</label>
+                                    {{ form.billing_country }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Method -->
+                        <h5 class="mb-3">Payment Method</h5>
+                        <div class="mb-4">
+                            {% for radio in form.payment_method %}
+                            <div class="form-check mb-2">
+                                {{ radio.tag }}
+                                <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                    {{ radio.choice_label }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Credit Card Information -->
+                        <div id="creditCardInfo" style="display: none;">
+                            <div class="row g-3 mb-4">
+                                <div class="col-12">
+                                    <label class="form-label">Card Number</label>
+                                    {{ form.card_number }}
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Name on Card</label>
+                                    {{ form.card_name }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Expiry Date</label>
+                                    {{ form.card_expiry }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">CVV</label>
+                                    {{ form.card_cvv }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Order Notes -->
+                        <h5 class="mb-3">Order Notes (Optional)</h5>
+                        <div class="mb-4">
+                            {{ form.order_notes }}
+                        </div>
+                        
+                        <!-- Coupon Code -->
+                        <h5 class="mb-3">Coupon Code</h5>
+                        <div class="mb-4">
+                            <div class="input-group">
+                                {{ form.coupon_code }}
+                                <button class="btn btn-outline-primary" type="button" onclick="applyCoupon()">
+                                    Apply
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Order Summary</h5>
+                    
+                    <!-- Cart Items -->
+                    {% for item in cart.items.all %}
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="mb-0 small">{{ item.product.name|truncatechars:30 }}</h6>
+                            <small class="text-muted">Qty: {{ item.quantity }}</small>
+                        </div>
+                        <span class="fw-bold">${{ item.get_subtotal }}</span>
+                    </div>
+                    {% endfor %}
+                    
+                    <hr>
+                    
+                    <!-- Totals -->
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span>${{ subtotal }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span>${{ shipping }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax</span>
+                        <span>${{ tax }}</span>
+                    </div>
+                    
+                    {% if discount > 0 %}
+                    <div class="d-flex justify-content-between mb-2 text-success">
+                        <span>Discount</span>
+                        <span>-${{ discount }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="h5">Total</span>
+                        <span class="h5 text-primary">${{ total }}</span>
+                    </div>
+                    
+                    <button type="submit" form="checkoutForm" class="btn btn-primary btn-lg w-100" onclick="return validateCheckout()">
+                        <i class="fas fa-lock me-2"></i>Place Order
+                    </button>
+                    
+                    <p class="small text-muted text-center mt-3">
+                        By placing your order, you agree to our 
+                        <a href="{% url 'store:page' 'terms' %}">Terms of Service</a> and 
+                        <a href="{% url 'store:page' 'privacy' %}">Privacy Policy</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Toggle billing address
+    document.getElementById('{{ form.same_as_shipping.id_for_label }}').addEventListener('change', function() {
+        document.getElementById('billingAddress').style.display = this.checked ? 'none' : 'block';
+    });
+    
+    // Toggle credit card fields
+    document.querySelectorAll('input[name="{{ form.payment_method.name }}"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.getElementById('creditCardInfo').style.display = 
+                this.value === 'credit_card' ? 'block' : 'none';
+        });
+    });
+    
+    // Form validation
+    function validateCheckout() {
+        const paymentMethod = document.querySelector('input[name="{{ form.payment_method.name }}"]:checked');
+        
+        if (!paymentMethod) {
+            showToast('Please select a payment method', 'warning');
+            return false;
+        }
+        
+        if (paymentMethod.value === 'credit_card') {
+            const cardNumber = document.getElementById('{{ form.card_number.id_for_label }}').value;
+            const cardName = document.getElementById('{{ form.card_name.id_for_label }}').value;
+            const cardExpiry = document.getElementById('{{ form.card_expiry.id_for_label }}').value;
+            const cardCvv = document.getElementById('{{ form.card_cvv.id_for_label }}').value;
+            
+            if (!cardNumber || !cardName || !cardExpiry || !cardCvv) {
+                showToast('Please fill in all credit card details', 'warning');
+                return false;
+            }
+            
+            // Basic card number validation
+            if (!/^\d{16}$/.test(cardNumber.replace(/\s/g, ''))) {
+                showToast('Invalid card number', 'warning');
+                return false;
+            }
+            
+            // Basic CVV validation
+            if (!/^\d{3,4}$/.test(cardCvv)) {
+                showToast('Invalid CVV', 'warning');
+                return false;
+            }
+        }
+        
+        showSpinner();
+        return true;
+    }
+    
+    // Auto-format card number
+    document.getElementById('{{ form.card_number.id_for_label }}').addEventListener('input', function(e) {
+        let value = this.value.replace(/\s/g, '');
+        if (value.length > 0) {
+            value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
+        }
+        this.value = value;
+    });
+    
+    // Auto-format expiry date
+    document.getElementById('{{ form.card_expiry.id_for_label }}').addEventListener('input', function(e) {
+        let value = this.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        this.value = value;
+    });
+</script>
+{% endblock %}

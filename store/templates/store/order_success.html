@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Success - Dropshipping Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <div class="display-1 text-success mb-3">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 class="mb-3">Thank You for Your Order!</h2>
+        <p class="lead">Your order has been placed successfully.</p>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Order Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h5>Order #{{ order.order_number }}</h5>
+                            <p class="text-muted mb-0">Placed on {{ order.created_at|date:"F j, Y" }}</p>
+                        </div>
+                        <span class="badge bg-success p-3">{{ order.get_status_display }}</span>
+                    </div>
+                    
+                    <!-- Order Details -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Shipping Address</h6>
+                            <p class="mb-1">{{ order.shipping_first_name }} {{ order.shipping_last_name }}</p>
+                            <p class="mb-1">{{ order.shipping_address }}</p>
+                            {% if order.shipping_address2 %}
+                            <p class="mb-1">{{ order.shipping_address2 }}</p>
+                            {% endif %}
+                            <p class="mb-1">{{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_zipcode }}</p>
+                            <p class="mb-1">{{ order.shipping_country }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Payment Method</h6>
+                            <p class="mb-1">{{ order.get_payment_method_display }}</p>
+                            <p class="mb-1">Payment Status: 
+                                <span class="badge {% if order.payment_status == 'paid' %}bg-success{% else %}bg-warning{% endif %}">
+                                    {{ order.get_payment_status_display }}
+                                </span>
+                            </p>
+                            <h6 class="mt-3 mb-2">Contact Information</h6>
+                            <p class="mb-1">{{ order.email }}</p>
+                            <p class="mb-1">{{ order.phone }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Items -->
+                    <h6 class="mb-3">Order Items</h6>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>SKU</th>
+                                    <th>Quantity</th>
+                                    <th class="text-end">Price</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                <tr>
+                                    <td>{{ item.product_name }}</td>
+                                    <td>{{ item.product_sku }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td class="text-end">${{ item.price }}</td>
+                                    <td class="text-end">${{ item.get_subtotal }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                                    <td class="text-end">${{ order.subtotal }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-end"><strong>Shipping:</strong></td>
+                                    <td class="text-end">${{ order.shipping_cost }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-end"><strong>Tax:</strong></td>
+                                    <td class="text-end">${{ order.tax }}</td>
+                                </tr>
+                                {% if order.discount > 0 %}
+                                <tr>
+                                    <td colspan="4" class="text-end"><strong>Discount:</strong></td>
+                                    <td class="text-end text-success">-${{ order.discount }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                    <td class="text-end"><strong>${{ order.total }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'store:products' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-store me-2"></i>Continue Shopping
+                        </a>
+                        <div>
+                            <a href="{% url 'store:order_invoice' order.order_number %}" class="btn btn-primary me-2">
+                                <i class="fas fa-download me-2"></i>Download Invoice
+                            </a>
+                            <a href="{% url 'store:track_order' %}?order={{ order.order_number }}" class="btn btn-outline-primary">
+                                <i class="fas fa-truck me-2"></i>Track Order
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Confirmation Email -->
+            <div class="alert alert-info mt-4">
+                <i class="fas fa-envelope me-2"></i>
+                We've sent a confirmation email to <strong>{{ order.email }}</strong> with your order details.
+            </div>
+            
+            <!-- Need Help? -->
+            <div class="text-center mt-4">
+                <p class="mb-0">Need help with your order?</p>
+                <a href="{% url 'store:page' 'contact' %}" class="text-primary">Contact our support team</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

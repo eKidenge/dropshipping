@@ -1,0 +1,903 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - Dropshipping Store{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    <div class="container">
+        <!-- Header with Date Range Filter -->
+        <div class="d-flex justify-content-between align-items-center text-white mb-4">
+            <div>
+                <h2 class="mb-0">Admin Dashboard</h2>
+                <p class="mb-0 opacity-75">Welcome back, {{ user.get_full_name|default:user.username }}!</p>
+            </div>
+            <div class="d-flex gap-2">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-calendar-alt me-2"></i>{{ date_range|default:"Last 30 Days" }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="?range=today">Today</a></li>
+                        <li><a class="dropdown-item" href="?range=yesterday">Yesterday</a></li>
+                        <li><a class="dropdown-item" href="?range=7">Last 7 Days</a></li>
+                        <li><a class="dropdown-item" href="?range=30">Last 30 Days</a></li>
+                        <li><a class="dropdown-item" href="?range=90">Last 90 Days</a></li>
+                        <li><a class="dropdown-item" href="?range=365">This Year</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="?range=all">All Time</a></li>
+                    </ul>
+                </div>
+                <button class="btn btn-light" onclick="window.location.reload()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Stats Cards Row 1 -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-lg h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="card-body text-white">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="text-white-50 mb-1">Total Orders</p>
+                                <h2 class="text-white mb-0">{{ total_orders }}</h2>
+                                <small class="text-white-50">
+                                    <i class="fas fa-arrow-up me-1"></i>
+                                    {{ order_growth|default:0 }}% from last period
+                                </small>
+                            </div>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="fas fa-shopping-cart fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <div class="progress bg-white bg-opacity-25" style="height: 5px;">
+                                <div class="progress-bar bg-white" style="width: {{ order_completion_rate|default:0 }}%"></div>
+                            </div>
+                            <small class="text-white-50 mt-2 d-block">
+                                {{ pending_orders }} pending • {{ processing_orders }} processing
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-lg h-100" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                    <div class="card-body text-white">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="text-white-50 mb-1">Total Revenue</p>
+                                <h2 class="text-white mb-0">${{ total_revenue|floatformat:2 }}</h2>
+                                <small class="text-white-50">
+                                    <i class="fas fa-arrow-up me-1"></i>
+                                    {{ revenue_growth|default:0 }}% from last period
+                                </small>
+                            </div>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="fas fa-dollar-sign fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-between text-white-50 small">
+                                <span>Avg. Order: ${{ average_order_value|floatformat:2 }}</span>
+                                <span>Today: ${{ today_revenue|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-lg h-100" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="card-body text-white">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="text-white-50 mb-1">Total Customers</p>
+                                <h2 class="text-white mb-0">{{ total_customers }}</h2>
+                                <small class="text-white-50">
+                                    <i class="fas fa-arrow-up me-1"></i>
+                                    {{ customer_growth|default:0 }} new this month
+                                </small>
+                            </div>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-between text-white-50 small">
+                                <span>New: {{ new_customers|default:0 }}</span>
+                                <span>Returning: {{ returning_customers|default:0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-lg h-100" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="card-body text-white">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="text-white-50 mb-1">Products</p>
+                                <h2 class="text-white mb-0">{{ total_products }}</h2>
+                                <small class="text-white-50">
+                                    <i class="fas fa-box me-1"></i>
+                                    {{ active_products }} active • {{ low_stock_count }} low stock
+                                </small>
+                            </div>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="fas fa-cube fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <div class="progress bg-white bg-opacity-25" style="height: 5px;">
+                                <div class="progress-bar bg-white" style="width: {{ stock_health|default:0 }}%"></div>
+                            </div>
+                            <small class="text-white-50 mt-2 d-block">
+                                {{ out_of_stock_products.count }} out of stock
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Cards Row 2 - Additional Metrics -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-2">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-primary mb-2">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                        <h3 class="mb-0">{{ completed_orders|default:0 }}</h3>
+                        <small class="text-muted">Completed</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-warning mb-2">
+                            <i class="fas fa-hourglass-half fa-2x"></i>
+                        </div>
+                        <h3 class="mb-0">{{ processing_orders|default:0 }}</h3>
+                        <small class="text-muted">Processing</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-info mb-2">
+                            <i class="fas fa-shipping-fast fa-2x"></i>
+                        </div>
+                        <h3 class="mb-0">{{ shipped_orders|default:0 }}</h3>
+                        <small class="text-muted">Shipped</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-danger mb-2">
+                            <i class="fas fa-times-circle fa-2x"></i>
+                        </div>
+                        <h3 class="mb-0">{{ cancelled_orders|default:0 }}</h3>
+                        <small class="text-muted">Cancelled</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-success mb-2">
+                            <i class="fas fa-tag fa-2x"></i>
+                        </div>
+                        <h3 class="mb-0">{{ active_coupons|default:0 }}</h3>
+                        <small class="text-muted">Active Coupons</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-secondary mb-2">
+                            <i class="fas fa-star fa-2x"></i>
+                        </div>
+                        <h3 class="mb-0">{{ average_rating|default:0|floatformat:1 }}</h3>
+                        <small class="text-muted">Avg. Rating</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Row -->
+        <div class="row g-4 mb-4">
+            <!-- Sales Chart -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-white border-0 py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Sales Overview</h5>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary active" onclick="updateChart('daily')">Daily</button>
+                                <button class="btn btn-outline-primary" onclick="updateChart('weekly')">Weekly</button>
+                                <button class="btn btn-outline-primary" onclick="updateChart('monthly')">Monthly</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="salesChart" style="height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Top Products -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0">Top Selling Products</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for product in top_products %}
+                        <div class="d-flex align-items-center mb-3">
+                            {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="rounded me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                            {% else %}
+                            <div class="bg-secondary rounded me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="fas fa-image text-white"></i>
+                            </div>
+                            {% endif %}
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0">{{ product.name|truncatechars:25 }}</h6>
+                                <small class="text-muted">{{ product.total_sold }} sold • ${{ product.total_revenue|floatformat:2 }}</small>
+                            </div>
+                            <span class="badge bg-primary">{{ forloop.counter }}</span>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted text-center">No sales data available</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Second Row Charts -->
+        <div class="row g-4 mb-4">
+            <!-- Category Distribution -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0">Sales by Category</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="categoryChart" style="height: 250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payment Methods -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0">Payment Methods</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="paymentChart" style="height: 250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Status -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0">Order Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="statusChart" style="height: 250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Orders Table -->
+        <div class="card border-0 shadow-lg mb-4">
+            <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Orders</h5>
+                <a href="{% url 'admin:store_order_changelist' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td>
+                                    <strong>{{ order.order_number }}</strong>
+                                </td>
+                                <td>
+                                    {{ order.get_full_name }}<br>
+                                    <small class="text-muted">{{ order.email }}</small>
+                                </td>
+                                <td>{{ order.created_at|date:"M d, H:i" }}</td>
+                                <td>{{ order.items.count }}</td>
+                                <td>${{ order.total|floatformat:2 }}</td>
+                                <td>
+                                    <span class="badge {% if order.payment_status == 'paid' %}bg-success{% elif order.payment_status == 'pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                                        {{ order.get_payment_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge 
+                                        {% if order.status == 'delivered' %}bg-success
+                                        {% elif order.status == 'shipped' %}bg-info
+                                        {% elif order.status == 'processing' %}bg-primary
+                                        {% elif order.status == 'pending' %}bg-warning
+                                        {% elif order.status == 'cancelled' %}bg-danger
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ order.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'admin:store_order_change' order.id %}" class="btn btn-outline-primary" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'store:order_invoice' order.order_number %}" class="btn btn-outline-info" title="Invoice">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </a>
+                                        <button class="btn btn-outline-success" title="Update Status" onclick="updateOrderStatus({{ order.id }})">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center py-4">
+                                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">No orders yet</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Inventory Alerts and Reviews -->
+        <div class="row g-4 mb-4">
+            <!-- Low Stock Alerts -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                            Low Stock Alerts
+                        </h5>
+                        <a href="{% url 'admin:store_product_changelist' %}?stock=low_stock" class="btn btn-sm btn-outline-primary">Manage</a>
+                    </div>
+                    <div class="card-body">
+                        {% for product in low_stock_products %}
+                        <div class="d-flex align-items-center mb-3 p-3 bg-light rounded">
+                            {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                            {% endif %}
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{ product.name }}</h6>
+                                <small class="text-muted">SKU: {{ product.sku }}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-warning text-dark mb-1">Stock: {{ product.stock_quantity }}</span>
+                                <small class="d-block text-muted">Threshold: {{ product.low_stock_threshold }}</small>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted text-center">No low stock alerts</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Reviews -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-star text-warning me-2"></i>
+                            Recent Reviews
+                        </h5>
+                        <a href="{% url 'admin:store_review_changelist' %}" class="btn btn-sm btn-outline-primary">Manage</a>
+                    </div>
+                    <div class="card-body">
+                        {% for review in recent_reviews %}
+                        <div class="mb-3 p-3 bg-light rounded">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong>{{ review.user.username }}</strong>
+                                    <span class="text-muted mx-2">•</span>
+                                    <small class="text-muted">{{ review.created_at|timesince }} ago</small>
+                                </div>
+                                <div class="rating">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= review.rating %}
+                                        <i class="fas fa-star text-warning"></i>
+                                        {% else %}
+                                        <i class="far fa-star text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <h6 class="mb-1">{{ review.title }}</h6>
+                            <p class="mb-2 small">{{ review.comment|truncatechars:100 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Product: {{ review.product.name }}</small>
+                                {% if not review.is_approved %}
+                                <span class="badge bg-warning">Pending Approval</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted text-center">No reviews yet</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Supplier Performance -->
+        <div class="card border-0 shadow-lg mb-4">
+            <div class="card-header bg-white border-0 py-3">
+                <h5 class="mb-0">Supplier Performance</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Supplier</th>
+                                <th>Products</th>
+                                <th>Orders</th>
+                                <th>Revenue</th>
+                                <th>Avg. Shipping Time</th>
+                                <th>Performance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for supplier in supplier_performance %}
+                            <tr>
+                                <td>
+                                    <strong>{{ supplier.name }}</strong><br>
+                                    <small class="text-muted">{{ supplier.company_name }}</small>
+                                </td>
+                                <td>{{ supplier.product_count }}</td>
+                                <td>{{ supplier.order_count }}</td>
+                                <td>${{ supplier.total_revenue|floatformat:2 }}</td>
+                                <td>{{ supplier.avg_shipping_time|default:"N/A" }} days</td>
+                                <td>
+                                    {% with rating=supplier.performance_rating %}
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar 
+                                            {% if rating >= 80 %}bg-success
+                                            {% elif rating >= 60 %}bg-info
+                                            {% elif rating >= 40 %}bg-warning
+                                            {% else %}bg-danger{% endif %}" 
+                                            style="width: {{ rating }}%">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">{{ rating }}%</small>
+                                    {% endwith %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">No supplier data available</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <a href="{% url 'admin:store_product_add' %}" class="btn btn-outline-primary w-100 py-3">
+                                    <i class="fas fa-plus-circle fa-2x mb-2 d-block"></i>
+                                    Add Product
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{% url 'admin:store_order_add' %}" class="btn btn-outline-success w-100 py-3">
+                                    <i class="fas fa-cart-plus fa-2x mb-2 d-block"></i>
+                                    Create Order
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{% url 'admin:store_coupon_add' %}" class="btn btn-outline-warning w-100 py-3">
+                                    <i class="fas fa-tag fa-2x mb-2 d-block"></i>
+                                    Create Coupon
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{% url 'admin:store_supplier_add' %}" class="btn btn-outline-info w-100 py-3">
+                                    <i class="fas fa-truck fa-2x mb-2 d-block"></i>
+                                    Add Supplier
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{% url 'admin:store_category_add' %}" class="btn btn-outline-secondary w-100 py-3">
+                                    <i class="fas fa-folder-plus fa-2x mb-2 d-block"></i>
+                                    Add Category
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{% url 'admin:store_page_add' %}" class="btn btn-outline-dark w-100 py-3">
+                                    <i class="fas fa-file-alt fa-2x mb-2 d-block"></i>
+                                    Create Page
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-danger w-100 py-3" onclick="exportReport()">
+                                    <i class="fas fa-file-export fa-2x mb-2 d-block"></i>
+                                    Export Report
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-purple w-100 py-3" onclick="sendNewsletter()">
+                                    <i class="fas fa-envelope fa-2x mb-2 d-block"></i>
+                                    Send Newsletter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Status Update Modal -->
+<div class="modal fade" id="orderStatusModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Order Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="orderStatusForm">
+                    <input type="hidden" id="orderId" name="order_id">
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="orderStatus" name="status">
+                            <option value="pending">Pending</option>
+                            <option value="processing">Processing</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tracking Number (Optional)</label>
+                        <input type="text" class="form-control" id="trackingNumber" name="tracking_number">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" id="orderNotes" name="notes" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveOrderStatus()">Update Status</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Sales Chart
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    let salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [{
+                label: 'Sales',
+                data: {{ chart_data|safe }},
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        display: true,
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // Category Chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ category_labels|safe }},
+            datasets: [{
+                data: {{ category_data|safe }},
+                backgroundColor: [
+                    '#667eea',
+                    '#764ba2',
+                    '#f093fb',
+                    '#f5576c',
+                    '#4facfe',
+                    '#00f2fe',
+                    '#11998e',
+                    '#38ef7d'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Payment Methods Chart
+    const paymentCtx = document.getElementById('paymentChart').getContext('2d');
+    new Chart(paymentCtx, {
+        type: 'pie',
+        data: {
+            labels: {{ payment_labels|safe }},
+            datasets: [{
+                data: {{ payment_data|safe }},
+                backgroundColor: [
+                    '#4facfe',
+                    '#00f2fe',
+                    '#667eea',
+                    '#764ba2'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Order Status Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ status_labels|safe }},
+            datasets: [{
+                data: {{ status_data|safe }},
+                backgroundColor: [
+                    '#ffc107',
+                    '#0d6efd',
+                    '#0dcaf0',
+                    '#198754',
+                    '#dc3545'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+
+    function updateChart(period) {
+        showSpinner();
+        
+        fetch(`/admin/chart-data/?period=${period}`)
+            .then(response => response.json())
+            .then(data => {
+                salesChart.data.labels = data.labels;
+                salesChart.data.datasets[0].data = data.values;
+                salesChart.update();
+                hideSpinner();
+            })
+            .catch(error => {
+                hideSpinner();
+                showToast('Error updating chart', 'error');
+            });
+    }
+
+    function updateOrderStatus(orderId) {
+        document.getElementById('orderId').value = orderId;
+        
+        // Fetch current order data
+        fetch(`/admin/order/${orderId}/`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('orderStatus').value = data.status;
+                document.getElementById('trackingNumber').value = data.tracking_number || '';
+                document.getElementById('orderNotes').value = data.notes || '';
+                
+                const modal = new bootstrap.Modal(document.getElementById('orderStatusModal'));
+                modal.show();
+            });
+    }
+
+    function saveOrderStatus() {
+        const formData = new FormData(document.getElementById('orderStatusForm'));
+        
+        fetch('/admin/order/update-status/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Order status updated successfully', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                showToast(data.error, 'error');
+            }
+        })
+        .catch(error => {
+            showToast('Error updating order status', 'error');
+        });
+    }
+
+    function exportReport() {
+        const range = new URLSearchParams(window.location.search).get('range') || '30';
+        window.location.href = `/admin/export-report/?range=${range}`;
+    }
+
+    function sendNewsletter() {
+        const modal = new bootstrap.Modal(document.getElementById('newsletterModal'));
+        modal.show();
+    }
+
+    // Real-time updates
+    let eventSource;
+    
+    function connectSSE() {
+        eventSource = new EventSource('/admin/dashboard/stream/');
+        
+        eventSource.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            updateDashboardData(data);
+        };
+        
+        eventSource.onerror = function() {
+            setTimeout(connectSSE, 5000);
+        };
+    }
+
+    function updateDashboardData(data) {
+        // Update stats in real-time
+        if (data.new_order) {
+            showToast(`New order received: ${data.new_order.order_number}`, 'success');
+            // Refresh the page after a delay to show new order
+            setTimeout(() => window.location.reload(), 3000);
+        }
+        
+        if (data.low_stock) {
+            showToast(`Low stock alert: ${data.low_stock.product_name}`, 'warning');
+        }
+    }
+
+    // Auto-refresh every 5 minutes
+    setInterval(() => {
+        if (!document.hidden) {
+            window.location.reload();
+        }
+    }, 300000);
+
+    // Initialize SSE connection
+    // connectSSE(); // Uncomment for real-time updates
+</script>
+
+<style>
+    .btn-outline-purple {
+        color: #764ba2;
+        border-color: #764ba2;
+    }
+    .btn-outline-purple:hover {
+        color: #fff;
+        background-color: #764ba2;
+        border-color: #764ba2;
+    }
+    .card {
+        transition: transform 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .table-hover tbody tr:hover {
+        background-color: rgba(102, 126, 234, 0.05);
+    }
+    .progress {
+        border-radius: 10px;
+    }
+    .badge {
+        padding: 0.5em 0.8em;
+    }
+    .btn-group .btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: transparent;
+    }
+</style>
+{% endblock %}
