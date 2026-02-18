@@ -23,7 +23,7 @@ markdown==3.5.1
 drf-yasg==1.21.7  # API documentation
 
 # Image processing
-Pillow==10.1.0  # Uncommented - required for imagekit
+#Pillow==10.1.0  # Uncommented - required for imagekit
 django-imagekit==5.0.0
 
 # File storage
