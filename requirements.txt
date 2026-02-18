@@ -54,7 +54,7 @@ django-ratelimit==4.1.0
 
 # SEO and sitemaps
 django-robots==5.0
-django-sitemap==1.0.1
+#django-sitemap==1.0.1
 
 # Debugging and development
 django-debug-toolbar==4.2.0
