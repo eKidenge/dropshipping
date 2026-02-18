@@ -2,7 +2,7 @@
 
 A full-featured dropshipping e-commerce platform built with Django, designed to help entrepreneurs start and manage their dropshipping business efficiently.
 
-## 🚀 Features
+## Features
 
 ### For Customers
 
@@ -32,7 +32,7 @@ A full-featured dropshipping e-commerce platform built with Django, designed to 
 - Caching for improved performance
 - REST API for mobile app integration (optional)
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Backend**: Django 4.x, Python 3.9+
 - **Database**: SQLite (development) / PostgreSQL (production)
@@ -43,14 +43,14 @@ A full-featured dropshipping e-commerce platform built with Django, designed to 
 - **Caching**: Redis
 - **Version Control**: Git
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Python 3.9 or higher
 - pip (Python package manager)
 - virtualenv (recommended)
 - Git
 
-## 🔧 Installation & Setup
+## Installation & Setup
 
 1. **Clone the repository**
 
