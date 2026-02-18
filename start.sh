@@ -15,4 +15,4 @@ if not User.objects.filter(username=username).exists():
     User.objects.create_superuser(username, email, password)
 "
 
-gunicorn dropshipping.wsgi:application --bind 0.0.0.0:\$PORT
+gunicorn dropshipping.wsgi:application --bind 0.0.0.0:$PORT
