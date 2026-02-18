@@ -33,7 +33,7 @@ django-storages==1.14.2
 # Celery and tasks
 celery==5.4.0
 django-celery-beat==2.6.0
-django-celery-results==2.5.2
+#django-celery-results==2.5.2
 eventlet==0.33.3  # For Windows
 
 # Payment gateways
