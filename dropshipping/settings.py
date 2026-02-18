@@ -245,20 +245,18 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 # ============================================================================
-# FIXED CACHE CONFIGURATION - OPTION 1: Django's built-in Redis cache
+# REDIS DISABLED - Using database for sessions and dummy cache
 # ============================================================================
+
+# Caches - Using dummy cache (no Redis)
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': os.environ.get('REDIS_URL', 'redis://localhost:6379'),
-        'KEY_PREFIX': 'dropshipping',
-        'TIMEOUT': 300,  # 5 minutes
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
 
-# Session configuration
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_CACHE_ALIAS = 'default'
+# Session configuration - Using database instead of cache
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Changed from cache
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 1 week
 SESSION_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_HTTPONLY = True
@@ -295,38 +293,39 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@dropshipping.
 CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'contact@dropshipping.com')
 
 
-# Celery Configuration
-CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = TIME_ZONE
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+# Celery Configuration - DISABLED (requires Redis)
+# To enable Celery, you would need to set up Redis and uncomment these lines
+# CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+# CELERY_RESULT_BACKEND = 'django-db'
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TIMEZONE = TIME_ZONE
+# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-# Celery beat schedule
-CELERY_BEAT_SCHEDULE = {
-    'update-product-prices': {
-        'task': 'store.tasks.update_product_prices',
-        'schedule': 3600,  # Every hour
-    },
-    'check-low-stock': {
-        'task': 'store.tasks.check_low_stock',
-        'schedule': 1800,  # Every 30 minutes
-    },
-    'send-order-status-emails': {
-        'task': 'store.tasks.send_order_status_emails',
-        'schedule': 300,  # Every 5 minutes
-    },
-    'cleanup-expired-carts': {
-        'task': 'store.tasks.cleanup_expired_carts',
-        'schedule': 86400,  # Daily
-    },
-    'sync-supplier-inventory': {
-        'task': 'store.tasks.sync_supplier_inventory',
-        'schedule': 21600,  # Every 6 hours
-    },
-}
+# Celery beat schedule (commented out)
+# CELERY_BEAT_SCHEDULE = {
+#     'update-product-prices': {
+#         'task': 'store.tasks.update_product_prices',
+#         'schedule': 3600,  # Every hour
+#     },
+#     'check-low-stock': {
+#         'task': 'store.tasks.check_low_stock',
+#         'schedule': 1800,  # Every 30 minutes
+#     },
+#     'send-order-status-emails': {
+#         'task': 'store.tasks.send_order_status_emails',
+#         'schedule': 300,  # Every 5 minutes
+#     },
+#     'cleanup-expired-carts': {
+#         'task': 'store.tasks.cleanup_expired_carts',
+#         'schedule': 86400,  # Daily
+#     },
+#     'sync-supplier-inventory': {
+#         'task': 'store.tasks.sync_supplier_inventory',
+#         'schedule': 21600,  # Every 6 hours
+#     },
+# }
 
 
 # Logging configuration
