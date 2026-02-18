@@ -35,6 +35,8 @@ celery>=5.4.0,<6.0
 django-celery-beat>=2.6.0,<3.0
 djangorestframework>=3.14.0,<4.0
 eventlet==0.33.3  # For Windows
+# Add this line to your requirements.txt
+django-celery-results==2.5.2
 
 # Payment gateways
 stripe==7.5.0
