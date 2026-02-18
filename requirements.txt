@@ -31,9 +31,9 @@ boto3==1.34.0  # For AWS S3
 django-storages==1.14.2
 
 # Celery and tasks
-celery==5.3.4
-django-celery-beat==2.5.0
-django-celery-results==2.5.1
+celery==5.4.0
+django-celery-beat==2.6.0
+django-celery-results==2.5.2
 eventlet==0.33.3  # For Windows
 
 # Payment gateways
