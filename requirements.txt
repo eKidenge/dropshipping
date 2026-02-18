@@ -23,7 +23,7 @@ markdown==3.5.1
 drf-yasg==1.21.7  # API documentation
 
 # Image processing
-#Pillow==10.1.0
+Pillow==10.1.0  # Uncommented - required for imagekit
 django-imagekit==5.0.0
 
 # File storage
@@ -33,10 +33,8 @@ django-storages==1.14.2
 # Celery and tasks
 celery>=5.4.0,<6.0
 django-celery-beat>=2.6.0,<3.0
-djangorestframework>=3.14.0,<4.0
+django-celery-results==2.6.0  # Fixed to existing version
 eventlet==0.33.3  # For Windows
-# Add this line to your requirements.txt
-django-celery-results==2.5.2
 
 # Payment gateways
 stripe==7.5.0
@@ -44,11 +42,11 @@ paypalrestsdk==1.13.1
 
 # PDF generation
 reportlab==4.1.0
-#xhtml2pdf==0.2.12
+# xhtml2pdf==0.2.12  # Commented out - causes Rust compilation issues
 
 # Excel/CSV export
 openpyxl==3.1.2
-#pandas==2.1.4
+# pandas==2.1.4  # Commented out - memory issues on Render
 
 # Security
 django-axes==6.3.0  # For brute force protection
@@ -56,7 +54,7 @@ django-ratelimit==4.1.0
 
 # SEO and sitemaps
 django-robots==5.0
-#django-sitemap==1.0.1
+# Using Django's built-in sitemaps - no package needed
 
 # Debugging and development
 django-debug-toolbar==4.2.0
