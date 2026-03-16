@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 import uuid
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -141,6 +142,8 @@ class Product(models.Model):
         return 0
 
     def is_in_stock(self):
+        if not self.track_inventory:
+            return True
         return self.stock_quantity > 0
 
 class ProductImage(models.Model):
@@ -290,7 +293,13 @@ class OrderItem(models.Model):
     quantity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True)
-    supplier_status = models.CharField(max_length=50, default='pending')
+    SUPPLIER_STATUS = [
+        ('pending', 'Pending'),
+        ('ordered', 'Ordered from Supplier'),
+        ('shipped', 'Shipped by Supplier'),
+        ('delivered', 'Delivered'),
+        ]
+    supplier_status = models.CharField(max_length=20, choices=SUPPLIER_STATUS, default='pending')
     tracking_number = models.CharField(max_length=200, blank=True)
 
     def __str__(self):

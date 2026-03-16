@@ -1,0 +1,303 @@
+{% extends 'store/base.html' %}
+{% block title %}About Us - QINEX KENYA{% endblock %}
+
+{% block content %}
+<style>
+    .about-section {
+        padding: 60px 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+    }
+    
+    .about-section h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .about-section p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto;
+        opacity: 0.95;
+    }
+    
+    .mission-vision {
+        padding: 60px 0;
+        background: #f8f9fa;
+    }
+    
+    .mission-vision .card {
+        border: none;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        height: 100%;
+    }
+    
+    .mission-vision .card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .mission-vision .card i {
+        font-size: 3rem;
+        color: #667eea;
+        margin-bottom: 20px;
+    }
+    
+    .mission-vision .card h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    
+    .mission-vision .card p {
+        color: #666;
+        line-height: 1.6;
+    }
+    
+    .values {
+        padding: 60px 0;
+    }
+    
+    .values h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 40px;
+        color: #333;
+    }
+    
+    .value-item {
+        text-align: center;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .value-item i {
+        font-size: 2.5rem;
+        color: #667eea;
+        margin-bottom: 15px;
+    }
+    
+    .value-item h4 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+    }
+    
+    .value-item p {
+        color: #666;
+        font-size: 0.95rem;
+    }
+    
+    .team {
+        padding: 60px 0;
+        background: #f8f9fa;
+    }
+    
+    .team h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 40px;
+        color: #333;
+    }
+    
+    .team-member {
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .team-member img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        margin-bottom: 15px;
+        border: 5px solid #fff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .team-member h4 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #333;
+    }
+    
+    .team-member p {
+        color: #667eea;
+        font-weight: 500;
+    }
+    
+    .stats {
+        padding: 60px 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .stat-item .number {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .stat-item .label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    
+    @media (max-width: 768px) {
+        .about-section h1 {
+            font-size: 2rem;
+        }
+        
+        .about-section p {
+            font-size: 1rem;
+        }
+        
+        .stat-item .number {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="about-section">
+    <div class="container">
+        <h1>About QINEX KENYA</h1>
+        <p>Your premier destination for quality products at unbeatable prices. We connect you with the best suppliers worldwide, bringing you a seamless shopping experience right from the comfort of your home.</p>
+    </div>
+</div>
+
+<!-- Mission & Vision -->
+<div class="mission-vision">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card text-center">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>Our Mission</h3>
+                    <p>To provide our customers with access to high-quality products at competitive prices while ensuring exceptional customer service and a seamless shopping experience.</p>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card text-center">
+                    <i class="fas fa-eye"></i>
+                    <h3>Our Vision</h3>
+                    <p>To become Kenya's most trusted online marketplace, bridging the gap between global suppliers and local consumers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Our Values -->
+<div class="values">
+    <div class="container">
+        <h2>Our Core Values</h2>
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="value-item">
+                    <i class="fas fa-check-circle"></i>
+                    <h4>Quality</h4>
+                    <p>We ensure every product meets our high quality standards</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="value-item">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <h4>Trust</h4>
+                    <p>Building lasting relationships through honesty and reliability</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="value-item">
+                    <i class="fas fa-rocket"></i>
+                    <h4>Innovation</h4>
+                    <p>Constantly improving to serve you better</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="value-item">
+                    <i class="fas fa-users"></i>
+                    <h4>Customer First</h4>
+                    <p>Your satisfaction is our top priority</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics -->
+<div class="stats">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="number">10K+</div>
+                    <div class="label">Happy Customers</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="number">5K+</div>
+                    <div class="label">Products</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="number">50+</div>
+                    <div class="label">Suppliers</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="number">24/7</div>
+                    <div class="label">Support</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Team Section -->
+<div class="team">
+    <div class="container">
+        <h2>Our Leadership Team</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/150" alt="Team Member">
+                    <h4>John Doe</h4>
+                    <p>CEO & Founder</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/150" alt="Team Member">
+                    <h4>Jane Smith</h4>
+                    <p>Operations Director</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/150" alt="Team Member">
+                    <h4>Mike Johnson</h4>
+                    <p>Customer Experience</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

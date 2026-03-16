@@ -419,7 +419,7 @@ def checkout(request):
         'total': total,
         'settings': settings,
     }
-    return render(request, 'checkout.html', context)
+    return render(request, 'store/checkout.html', context)
 
 # Order success view
 def order_success(request, order_number):
@@ -429,7 +429,7 @@ def order_success(request, order_number):
         'order': order,
         'settings': SiteSettings.objects.first(),
     }
-    return render(request, 'order_success.html', context)
+    return render(request, 'store/order_success.html', context)
 
 # Order invoice PDF
 def order_invoice(request, order_number):
@@ -615,7 +615,7 @@ def profile(request):
         'wishlist': wishlist,
         'reviews': reviews,
     }
-    return render(request, 'profile.html', context)
+    return render(request, 'store/profile.html', context)
 
 # Add to wishlist
 @login_required
@@ -673,7 +673,7 @@ def add_review(request, product_id):
         'form': form,
         'product': product,
     }
-    return render(request, 'add_review.html', context)
+    return render(request, 'store/add_review.html', context)
 
 # Apply coupon
 @require_POST
@@ -755,12 +755,12 @@ def track_order(request):
             messages.error(request, 'Order not found')
     
     context = {'order': order}
-    return render(request, 'track_order.html', context)
+    return render(request, 'store/track_order.html', context)
 
 # Static pages
 def page_view(request, slug):
     page = get_object_or_404(Page, slug=slug, is_published=True)
-    return render(request, 'page.html', {'page': page})
+    return render(request, 'store/page.html', {'page': page})
 
 # Category products view
 def category_products(request, slug):
@@ -784,7 +784,7 @@ def category_products(request, slug):
         'subcategories': subcategories,
         'total_products': products.count(),
     }
-    return render(request, 'category_products.html', context)
+    return render(request, 'store/category_products.html', context)
 
 # Admin dashboard
 @login_required
@@ -915,7 +915,7 @@ def order_detail(request, order_number):
         return redirect('store:home')
     
     context = {'order': order}
-    return render(request, 'order_detail.html', context)
+    return render(request, 'store/order_detail.html', context)
 
 def edit_profile(request):
     """Edit user profile"""
@@ -932,7 +932,7 @@ def edit_profile(request):
         form = UserProfileForm(instance=request.user)
     
     context = {'form': form}
-    return render(request, 'edit_profile.html', context)
+    return render(request, 'store/edit_profile.html', context)
 
 def change_password(request):
     """Change user password"""
@@ -950,7 +950,7 @@ def change_password(request):
         form = PasswordChangeForm(request.user)
     
     context = {'form': form}
-    return render(request, 'change_password.html', context)
+    return render(request, 'store/change_password.html', context)
 
 def wishlist(request):
     """Display user's wishlist"""
@@ -959,7 +959,7 @@ def wishlist(request):
     
     wishlist_items = Wishlist.objects.filter(user=request.user).select_related('product')
     context = {'wishlist_items': wishlist_items}
-    return render(request, 'wishlist.html', context)
+    return render(request, 'store/wishlist.html', context)
 
 def remove_from_wishlist(request, product_id):
     """Remove item from wishlist"""
@@ -983,7 +983,7 @@ def edit_review(request, review_id):
         form = ReviewForm(instance=review)
     
     context = {'form': form, 'review': review}
-    return render(request, 'edit_review.html', context)
+    return render(request, 'store/edit_review.html', context)
 
 def delete_review(request, review_id):
     """Delete a review"""
@@ -1003,7 +1003,7 @@ def address_list(request):
     
     addresses = ShippingAddress.objects.filter(user=request.user)
     context = {'addresses': addresses}
-    return render(request, 'address_list.html', context)
+    return render(request, 'store/address_list.html', context)
 
 def add_address(request):
     """Add new address"""
@@ -1022,7 +1022,7 @@ def add_address(request):
         form = ShippingAddressForm()
     
     context = {'form': form}
-    return render(request, 'add_address.html', context)
+    return render(request, 'store/add_address.html', context)
 
 def edit_address(request, address_id):
     """Edit address"""
@@ -1038,7 +1038,7 @@ def edit_address(request, address_id):
         form = ShippingAddressForm(instance=address)
     
     context = {'form': form, 'address': address}
-    return render(request, 'edit_address.html', context)
+    return render(request, 'store/edit_address.html', context)
 
 def delete_address(request, address_id):
     """Delete address"""
@@ -1093,7 +1093,7 @@ def search(request):
         'products': products,
         'count': products.count()
     }
-    return render(request, 'search_results.html', context)
+    return render(request, 'store/search_results.html', context)
 
 def newsletter_subscribe(request):
     """Subscribe to newsletter"""
@@ -1114,9 +1114,9 @@ def newsletter_unsubscribe(request, email):
         subscriber = NewsletterSubscriber.objects.get(email=email)
         subscriber.is_active = False
         subscriber.save()
-        return render(request, 'newsletter_unsubscribe.html', {'success': True})
+        return render(request, 'store/newsletter_unsubscribe.html', {'success': True})
     except NewsletterSubscriber.DoesNotExist:
-        return render(request, 'newsletter_unsubscribe.html', {'success': False})
+        return render(request, 'store/newsletter_unsubscribe.html', {'success': False})
 
 def contact(request):
     """Contact form"""
@@ -1145,35 +1145,35 @@ def contact(request):
         form = ContactForm()
     
     context = {'form': form}
-    return render(request, 'contact.html', context)
+    return render(request, 'store/contact.html', context)
 
 def contact_success(request):
     """Contact form success page"""
-    return render(request, 'contact_success.html')
+    return render(request, 'store/contact_success.html')
 
 def about(request):
     """About page"""
-    return render(request, 'about.html', {'settings': SiteSettings.objects.first()})
+    return render(request, 'store/about.html', {'settings': SiteSettings.objects.first()})
 
 def faq(request):
     """FAQ page"""
-    return render(request, 'faq.html')
+    return render(request, 'store/faq.html')
 
 def shipping_info(request):
     """Shipping information page"""
-    return render(request, 'shipping_info.html', {'settings': SiteSettings.objects.first()})
+    return render(request, 'store/shipping_info.html', {'settings': SiteSettings.objects.first()})
 
 def returns_policy(request):
     """Returns policy page"""
-    return render(request, 'returns_policy.html')
+    return render(request, 'store/returns_policy.html')
 
 def privacy_policy(request):
     """Privacy policy page"""
-    return render(request, 'privacy_policy.html')
+    return render(request, 'store/privacy_policy.html')
 
 def terms_conditions(request):
     """Terms and conditions page"""
-    return render(request, 'terms_conditions.html')
+    return render(request, 'store/terms_conditions.html')
 
 # API View methods
 def api_product_detail(request, product_id):
@@ -1326,7 +1326,7 @@ def sitemap(request):
     categories = Category.objects.filter(is_active=True)
     pages = Page.objects.filter(is_published=True)
     
-    return render(request, 'sitemap.xml', {
+    return render(request, 'store/sitemap.xml', {
         'products': products,
         'categories': categories,
         'pages': pages
@@ -1334,14 +1334,14 @@ def sitemap(request):
 
 def robots_txt(request):
     """Generate robots.txt"""
-    return render(request, 'robots.txt', content_type='text/plain')
+    return render(request, 'store/robots.txt', content_type='text/plain')
 
 # Error handlers
 def handler404(request, exception):
-    return render(request, '404.html', status=404)
+    return render(request, 'store/404.html', status=404)
 
 def handler500(request):
-    return render(request, '500.html', status=500)
+    return render(request, 'store/500.html', status=500)
 
 # Admin API endpoints
 def admin_chart_data(request):
@@ -1619,7 +1619,7 @@ def profile(request):
         'recent_orders': recent_orders,
         'title': f'{user.username}\'s Profile'
     }
-    return render(request, 'profile.html', context)
+    return render(request, 'store/profile.html', context)
 
 @login_required
 def edit_profile(request):
@@ -1656,7 +1656,7 @@ def edit_profile(request):
         'form': form,
         'title': 'Edit Profile'
     }
-    return render(request, 'edit_profile.html', context)
+    return render(request, 'store/edit_profile.html', context)
 
 # Helper functions
 def transfer_guest_cart(request, user):

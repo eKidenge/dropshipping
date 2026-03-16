@@ -1,0 +1,37 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /profile/
+Disallow: /accounts/
+Disallow: /wishlist/
+Disallow: /api/
+Disallow: /track-order/
+Allow: /
+
+Sitemap: {{ request.scheme }}://{{ request.get_host }}/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 10
+
+# User-agent specific rules
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: Facebookbot
+Allow: /
+
+# Host directive
+Host: {{ request.get_host }}

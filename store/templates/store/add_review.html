@@ -1,0 +1,153 @@
+{% extends 'store/base.html' %}
+{% block title %}Add Review - QINEX KENYA{% endblock %}
+
+{% block content %}
+<style>
+    .review-form-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .product-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+    .product-info img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    .product-info h3 {
+        margin: 0;
+        color: #333;
+        font-size: 1.2rem;
+    }
+    .rating-container {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .rating-stars {
+        display: inline-block;
+        unicode-bidi: bidi-override;
+        color: #ddd;
+        font-size: 30px;
+        position: relative;
+        margin: 0;
+        padding: 0;
+    }
+    .rating-stars input {
+        display: none;
+    }
+    .rating-stars label {
+        float: right;
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label,
+    .rating-stars input:checked ~ label {
+        color: #ffc107;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+        font-weight: 500;
+    }
+    .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    .form-group textarea {
+        height: 150px;
+        resize: vertical;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 5px rgba(102,126,234,0.3);
+    }
+    .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        width: 100%;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+    }
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        width: 100%;
+        margin-top: 10px;
+    }
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+</style>
+
+<div class="review-form-container">
+    <div class="product-info">
+        {% if product.main_image %}
+        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+        {% endif %}
+        <div>
+            <h3>{{ product.name }}</h3>
+            <p>Price: KSh {{ product.selling_price }}</p>
+        </div>
+    </div>
+    
+    <h2>Write Your Review</h2>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="rating-container">
+            <div class="rating-stars">
+                <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
+                <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Review Title</label>
+            <input type="text" name="title" placeholder="Summarize your experience" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Your Review</label>
+            <textarea name="content" placeholder="Tell others about your experience with this product..." required></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+        <a href="{% url 'store:product_detail' product.slug %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

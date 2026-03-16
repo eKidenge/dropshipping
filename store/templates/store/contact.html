@@ -1,0 +1,331 @@
+{% extends 'store/base.html' %}
+{% block title %}Contact Us - QINEX KENYA{% endblock %}
+
+{% block content %}
+<style>
+    .contact-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 60px 0;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .contact-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .contact-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        max-width: 1000px;
+        margin: 0 auto 40px;
+        padding: 0 20px;
+    }
+    .contact-info {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .contact-info h2 {
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 1.5rem;
+    }
+    .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    .info-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+    .info-content h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    .info-content p {
+        color: #666;
+        line-height: 1.6;
+    }
+    .social-links {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+    .social-links h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+    }
+    .social-icons {
+        display: flex;
+        gap: 15px;
+    }
+    .social-icons a {
+        width: 40px;
+        height: 40px;
+        background: #f8f9fa;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #667eea;
+        transition: all 0.3s ease;
+    }
+    .social-icons a:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transform: translateY(-3px);
+    }
+    .contact-form {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .contact-form h2 {
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 1.5rem;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+        font-weight: 500;
+    }
+    .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    .form-group textarea {
+        height: 150px;
+        resize: vertical;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 5px rgba(102,126,234,0.3);
+    }
+    .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        width: 100%;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+    }
+    .map-section {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    .map-container {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .map-container iframe {
+        width: 100%;
+        height: 400px;
+        border: none;
+    }
+    .faq-section {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    .faq-section h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 2rem;
+    }
+    .faq-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    .faq-item {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .faq-item h3 {
+        color: #333;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .faq-item p {
+        color: #666;
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+    @media (max-width: 768px) {
+        .contact-grid {
+            grid-template-columns: 1fr;
+        }
+        .contact-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="contact-header">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p>We're here to help! Reach out to us anytime.</p>
+    </div>
+</div>
+
+<div class="contact-grid">
+    <!-- Contact Information -->
+    <div class="contact-info">
+        <h2>Get in Touch</h2>
+        
+        <div class="info-item">
+            <div class="info-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="info-content">
+                <h3>Visit Us</h3>
+                <p>123 Business Park,<br>Nairobi, Kenya</p>
+            </div>
+        </div>
+        
+        <div class="info-item">
+            <div class="info-icon">
+                <i class="fas fa-phone"></i>
+            </div>
+            <div class="info-content">
+                <h3>Call Us</h3>
+                <p>+254 700 000 000<br>Mon-Fri, 8am-6pm</p>
+            </div>
+        </div>
+        
+        <div class="info-item">
+            <div class="info-icon">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="info-content">
+                <h3>Email Us</h3>
+                <p>info@quinexkenya.com<br>support@quinexkenya.com</p>
+            </div>
+        </div>
+        
+        <div class="social-links">
+            <h3>Follow Us</h3>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contact Form -->
+    <div class="contact-form">
+        <h2>Send us a Message</h2>
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Subject</label>
+                <input type="text" name="subject" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Message</label>
+                <textarea name="message" required></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Send Message</button>
+        </form>
+    </div>
+</div>
+
+<!-- Map Section -->
+<div class="map-section">
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.8462962765316!2d36.821946!3d-1.292066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f10d2b7f1d4f1%3A0x3c8b3b3b3b3b3b3b!2sNairobi%2C%20Kenya!5e0!3m2!1sen!2s!4v1620000000000!5m2!1sen!2s" 
+                allowfullscreen="" loading="lazy"></iframe>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-grid">
+        <div class="faq-item">
+            <h3>How long does shipping take?</h3>
+            <p>Shipping typically takes 3-7 business days within Kenya, and 7-14 business days for international orders.</p>
+        </div>
+        
+        <div class="faq-item">
+            <h3>What payment methods do you accept?</h3>
+            <p>We accept M-Pesa, Credit/Debit cards, and bank transfers.</p>
+        </div>
+        
+        <div class="faq-item">
+            <h3>How do I track my order?</h3>
+            <p>You can track your order using the tracking number sent to your email after shipment.</p>
+        </div>
+        
+        <div class="faq-item">
+            <h3>What is your return policy?</h3>
+            <p>We offer 30-day returns for unused items in original packaging.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
